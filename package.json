@@ -1,0 +1,111 @@
+{
+  "name": "pcw-toolbelt",
+  "displayName": "PCW ToolBelt",
+  "description": "PowerPacks for your dev workflow - Modular tools for WordPress, Elementor, and WooCommerce development",
+  "version": "1.0.0",
+  "publisher": "pcwprops",
+  "icon": "assets/icon.png",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other",
+    "Programming Languages",
+    "Snippets"
+  ],
+  "keywords": [
+    "wordpress",
+    "elementor",
+    "woocommerce",
+    "php",
+    "automation"
+  ],
+  "activationEvents": [
+    "onCommand:pcw.core.generateContextMap",
+    "onCommand:pcw.core.setGuardrails",
+    "onCommand:pcw.core.updateGuardrails",
+    "onCommand:pcw.core.scanSecrets",
+    "onCommand:pcw.elementor.auditWidget",
+    "onCommand:pcw.elementor.generateBoilerplate",
+    "onCommand:pcw.wordpress.scaffoldChildTheme",
+    "onCommand:pcw.wordpress.runWPCS",
+    "onCommand:pcw.woocommerce.checkTemplateOverrides",
+    "onCommand:pcw.woocommerce.generateCustomTab"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "pcw.core.generateContextMap",
+        "title": "PCW: Generate Context Map",
+        "category": "Core"
+      },
+      {
+        "command": "pcw.core.setGuardrails",
+        "title": "PCW: Set Project Guardrails",
+        "category": "Core"
+      },
+      {
+        "command": "pcw.core.updateGuardrails",
+        "title": "PCW: Update Guardrails",
+        "category": "Core"
+      },
+      {
+        "command": "pcw.core.scanSecrets",
+        "title": "PCW: Secret Scanner",
+        "category": "Core"
+      },
+      {
+        "command": "pcw.elementor.auditWidget",
+        "title": "PCW: Audit Elementor Widget (Pre-Flight)",
+        "category": "Elementor"
+      },
+      {
+        "command": "pcw.elementor.generateBoilerplate",
+        "title": "PCW: Generate Widget Boilerplate",
+        "category": "Elementor"
+      },
+      {
+        "command": "pcw.wordpress.scaffoldChildTheme",
+        "title": "PCW: Scaffold Child Theme",
+        "category": "WordPress"
+      },
+      {
+        "command": "pcw.wordpress.runWPCS",
+        "title": "PCW: Run WPCS Compliance Check",
+        "category": "WordPress"
+      },
+      {
+        "command": "pcw.woocommerce.checkTemplateOverrides",
+        "title": "PCW: Check Template Overrides",
+        "category": "WooCommerce"
+      },
+      {
+        "command": "pcw.woocommerce.generateCustomTab",
+        "title": "PCW: Generate Custom Tab",
+        "category": "WooCommerce"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/vscode": "^1.80.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.50.0",
+    "typescript": "^5.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PCWProps/pcw-toolbelt"
+  },
+  "license": "MIT"
+}
