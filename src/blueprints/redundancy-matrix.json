@@ -1,0 +1,295 @@
+{
+  "categories": [
+    {
+      "name": "SEO",
+      "description": "Search Engine Optimization plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "yoast-seo",
+        "wordpress-seo",
+        "all-in-one-seo-pack",
+        "aioseo",
+        "rank-math",
+        "rankmath",
+        "seo-press",
+        "seopress",
+        "the-seo-framework"
+      ]
+    },
+    {
+      "name": "Caching",
+      "description": "Page and object caching plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "wp-rocket",
+        "w3-total-cache",
+        "wp-super-cache",
+        "wp-fastest-cache",
+        "litespeed-cache",
+        "cache-enabler",
+        "autoptimize",
+        "comet-cache",
+        "breeze"
+      ]
+    },
+    {
+      "name": "Security",
+      "description": "Security and firewall plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "wordfence",
+        "ithemes-security",
+        "better-wp-security",
+        "sucuri-scanner",
+        "all-in-one-wp-security",
+        "jetpack",
+        "security-ninja",
+        "malcare-security"
+      ]
+    },
+    {
+      "name": "Backup",
+      "description": "Backup and restore plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "updraftplus",
+        "backupbuddy",
+        "backwpup",
+        "duplicator",
+        "blogvault",
+        "jetpack",
+        "vaultpress",
+        "backup-guard"
+      ]
+    },
+    {
+      "name": "Contact Forms",
+      "description": "Form builder and contact form plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "contact-form-7",
+        "ninja-forms",
+        "wpforms",
+        "gravity-forms",
+        "gravityforms",
+        "formidable",
+        "forminator",
+        "happyforms",
+        "fluent-forms"
+      ]
+    },
+    {
+      "name": "Page Builders",
+      "description": "Visual page builder plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "elementor",
+        "beaver-builder",
+        "divi-builder",
+        "wpbakery",
+        "visual-composer",
+        "oxygen",
+        "brizy",
+        "bricks",
+        "gutenberg"
+      ]
+    },
+    {
+      "name": "Image Optimization",
+      "description": "Image compression and optimization plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "smush",
+        "wp-smush",
+        "imagify",
+        "shortpixel",
+        "ewww-image-optimizer",
+        "optimole",
+        "tiny-compress",
+        "resmush"
+      ]
+    },
+    {
+      "name": "Slider",
+      "description": "Image and content slider plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "smart-slider",
+        "meta-slider",
+        "revolution-slider",
+        "revslider",
+        "soliloquy",
+        "master-slider",
+        "layer-slider",
+        "slider-revolution"
+      ]
+    },
+    {
+      "name": "Analytics",
+      "description": "Analytics and tracking plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "google-analytics",
+        "monster-insights",
+        "monsterinsights",
+        "exact-metrics",
+        "analytify",
+        "jetpack",
+        "site-kit",
+        "matomo"
+      ]
+    },
+    {
+      "name": "Social Sharing",
+      "description": "Social media sharing plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "social-warfare",
+        "shareaholic",
+        "addtoany",
+        "jetpack",
+        "sumo",
+        "monarchs",
+        "easy-social-share",
+        "social-pug"
+      ]
+    },
+    {
+      "name": "Membership",
+      "description": "Membership and user management plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "memberpress",
+        "restrict-content-pro",
+        "paid-memberships-pro",
+        "s2member",
+        "wishlist-member",
+        "ultimate-member",
+        "buddypress",
+        "membership"
+      ]
+    },
+    {
+      "name": "Email Marketing",
+      "description": "Newsletter and email marketing plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "mailchimp",
+        "newsletter",
+        "optinmonster",
+        "convertkit",
+        "mailpoet",
+        "sumo",
+        "thrive-leads",
+        "bloom"
+      ]
+    },
+    {
+      "name": "Popup",
+      "description": "Popup and modal plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "popup-maker",
+        "optinmonster",
+        "sumo",
+        "thrive-leads",
+        "bloom",
+        "elementor-pro",
+        "hustle",
+        "popup-builder"
+      ]
+    },
+    {
+      "name": "Migration",
+      "description": "Site migration and cloning plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "duplicator",
+        "all-in-one-wp-migration",
+        "migrate-guru",
+        "backup-guard",
+        "wpvivid",
+        "shipper",
+        "updraftplus"
+      ]
+    },
+    {
+      "name": "Database Optimization",
+      "description": "Database cleanup and optimization plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "wp-optimize",
+        "wp-sweep",
+        "advanced-database-cleaner",
+        "wp-rocket",
+        "perfmatters",
+        "clean-options"
+      ]
+    },
+    {
+      "name": "Redirection",
+      "description": "URL redirect and 404 management plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "redirection",
+        "simple-301-redirects",
+        "safe-redirect-manager",
+        "301-redirects",
+        "yoast-seo",
+        "rank-math"
+      ]
+    },
+    {
+      "name": "Lazy Loading",
+      "description": "Lazy load images and content plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "lazy-load",
+        "a3-lazy-load",
+        "wp-rocket",
+        "perfmatters",
+        "smush",
+        "autoptimize"
+      ]
+    },
+    {
+      "name": "Related Posts",
+      "description": "Related posts and content recommendation plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "yarpp",
+        "related-posts",
+        "jetpack",
+        "contextual-related-posts",
+        "inline-related-posts"
+      ]
+    },
+    {
+      "name": "Maintenance Mode",
+      "description": "Coming soon and maintenance mode plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "coming-soon",
+        "maintenance",
+        "wp-maintenance-mode",
+        "under-construction",
+        "seedprod",
+        "minimal-coming-soon"
+      ]
+    },
+    {
+      "name": "Cookie Consent",
+      "description": "Cookie notice and GDPR compliance plugins",
+      "maxRecommended": 1,
+      "plugins": [
+        "cookie-notice",
+        "gdpr-cookie-consent",
+        "cookiebot",
+        "complianz",
+        "cookie-law-info",
+        "real-cookie-banner"
+      ]
+    }
+  ],
+  "lastUpdated": "2025-01-01"
+}

@@ -59,6 +59,21 @@
         "category": "Core"
       },
       {
+        "command": "pcw.core.checkDependencies",
+        "title": "PPACK: Core: Dependency Health Check",
+        "category": "Core"
+      },
+      {
+        "command": "pcw.core.scaffoldBlueprint",
+        "title": "PPACK: Core: Scaffold Blueprint",
+        "category": "Core"
+      },
+      {
+        "command": "pcw.core.auditRedundancy",
+        "title": "PPACK: Core: Audit Plugin Redundancy",
+        "category": "Core"
+      },
+      {
         "command": "pcw.elementor.auditWidget",
         "title": "PPACK: Elementor: Audit Widget (Pre-Flight)",
         "category": "Elementor"

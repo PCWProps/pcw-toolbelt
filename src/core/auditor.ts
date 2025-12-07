@@ -7,6 +7,11 @@ let _sidePanelProvider: any;
 
 export function setSidePanelProvider(provider: any) {
   _sidePanelProvider = provider;
+  return _sidePanelProvider;
+}
+
+export function getSidePanelProvider() {
+  return _sidePanelProvider;
 }
 
 /**

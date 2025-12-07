@@ -12,22 +12,31 @@ A modular VS Code extension with specialized tools for WordPress, Elementor, and
 ## ✨ Features
 
 ### 🟢 All Systems Go PowerPack (Core - Always Included)
-*Foundational tools for project sanity, context, and health*
 
-- **Generate Context Map** - Scans your file tree and creates an `Agent.md` for AI agents
-- **Set Project Guardrails** - Defines coding rules for AI generation
-- **Update Guardrails** - Auto-scans code for drift and updates rules
-- **Secret Scanner** - Finds hardcoded API keys before you commit
+_Foundational tools for project sanity, context, and health_
+
+1. **Generate Context Map** - Scans your file tree and creates an `Agent.md` for AI agents
+2. **Context-Aware File Audit** - Detects framework and applies appropriate best practice rules
+3. **Context-Aware Workspace Audit** - Audits entire workspace with dynamic rule loading
+4. **Set Project Guardrails** - Interactive setup of coding standards (.pcw-guardrails.json)
+5. **Update Guardrails** - View and manage project coding rules
+6. **Secret Scanner** - Finds 20+ types of hardcoded secrets (API keys, passwords, tokens)
+7. **Dependency Health Check** - Audits npm/composer packages for vulnerabilities and updates
+8. **Scaffold Blueprint** - Rapid project scaffolding from JSON templates
+9. **Audit Plugin Redundancy** - Detects conflicting WordPress plugins (20 categories)
+10. **Reload Rules** - Hot-reload audit rules without restarting VS Code
 
 ### 🔵 WordPress PowerPack
-*Standards, PHP compliance, and Theme structure*
+
+_Standards, PHP compliance, and Theme structure_
 
 - **Child Theme Scaffolder** - One-click generation of theme files
 - **WPCS Compliance Runner** - Runs PHP Code Sniffer against WordPress standards
-- *(More features coming soon)*
+- _(More features coming soon)_
 
 ### 🌸 Elementor PowerPack
-*The "Anti-Error" tools to stop "Files can't be used" errors*
+
+_The "Anti-Error" tools to stop "Files can't be used" errors_
 
 - **Widget Pre-Flight Audit** ⭐ - Validates PHP against Elementor's `Widget_Base` requirements
   - Checks class extension
@@ -35,20 +44,22 @@ A modular VS Code extension with specialized tools for WordPress, Elementor, and
   - Detects inline CSS issues
   - Flags deprecated methods
 - **Widget Boilerplate Generator** - Creates perfect widget class structure
-- *(More features coming soon)*
+- _(More features coming soon)_
 
 ### 🛒 WooCommerce PowerPack
-*Security, template overrides, and data integrity*
+
+_Security, template overrides, and data integrity_
 
 - **Template Override Checker** - Finds outdated theme files
 - **Custom Tab Generator** - Scaffolds My Account/Product tabs
-- *(More features coming soon)*
+- _(More features coming soon)_
 
 ---
 
 ## 📦 Installation
 
 ### Prerequisites
+
 - VS Code version 1.80.0 or higher
 - Node.js 18.x or higher (for development)
 - TypeScript 5.2+ (for development)
@@ -56,17 +67,20 @@ A modular VS Code extension with specialized tools for WordPress, Elementor, and
 ### From Source
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/PCWProps/pcw-toolbelt.git
    cd pcw-toolbelt
    ```
 
 2. **Install dependencies:**
+
    ```bash
    npm install
    ```
 
 3. **Compile the extension:**
+
    ```bash
    npm run compile
    ```
@@ -92,6 +106,7 @@ A modular VS Code extension with specialized tools for WordPress, Elementor, and
 3. Review the output for any structural issues
 
 **Sample Output:**
+
 ```
 ✓ Class Structure Validated
 ✓ Namespaces Checked
@@ -152,6 +167,7 @@ npm run test          # Run tests (coming soon)
 ### Adding a New Command
 
 1. **Define the command in `package.json`:**
+
    ```json
    {
      "command": "pcw.yourpack.yourCommand",
@@ -163,10 +179,10 @@ npm run test          # Run tests (coming soon)
 2. **Register in the PowerPack's `index.ts`:**
    ```typescript
    const yourCmd = vscode.commands.registerCommand(
-       'pcw.yourpack.yourCommand',
-       () => {
-           vscode.window.showInformationMessage('Hello!');
-       }
+     "pcw.yourpack.yourCommand",
+     () => {
+       vscode.window.showInformationMessage("Hello!");
+     }
    );
    context.subscriptions.push(yourCmd);
    ```
