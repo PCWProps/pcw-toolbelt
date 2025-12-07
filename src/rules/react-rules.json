@@ -1,0 +1,96 @@
+{
+  "context": "react",
+  "description": "React best practices and common anti-patterns",
+  "rules": [
+    {
+      "pattern": "class\\s+\\w+\\s+extends\\s+React\\.Component",
+      "message": "Class component detected - consider using functional components with hooks",
+      "severity": "info",
+      "category": "modern-react"
+    },
+    {
+      "pattern": "componentWillMount|componentWillReceiveProps|componentWillUpdate",
+      "message": "Deprecated lifecycle method - use new lifecycle methods or hooks instead",
+      "severity": "warning",
+      "category": "deprecated"
+    },
+    {
+      "pattern": "useEffect\\s*\\([^,]+\\)(?!\\s*,)",
+      "message": "useEffect without dependency array - may cause infinite loops or unnecessary re-renders",
+      "severity": "warning",
+      "category": "hooks"
+    },
+    {
+      "pattern": "useState\\s*\\(.*\\{.*\\}.*\\)",
+      "message": "useState with object - consider splitting into multiple useState calls or use useReducer",
+      "severity": "info",
+      "category": "hooks"
+    },
+    {
+      "pattern": "useEffect\\s*\\([^}]+setState[^}]+\\)\\s*,\\s*\\[[^\\]]*state",
+      "message": "useEffect updating state it depends on - potential infinite loop",
+      "severity": "error",
+      "category": "hooks"
+    },
+    {
+      "pattern": "\\{\\s*\\.\\.\\.props\\s*\\}",
+      "message": "Spreading all props - can lead to unnecessary re-renders and unclear prop contracts",
+      "severity": "info",
+      "category": "props"
+    },
+    {
+      "pattern": "onClick\\s*=\\s*\\{[^}]*\\([^)]*\\)\\s*=>",
+      "message": "Inline arrow function in onClick - creates new function on each render, use useCallback",
+      "severity": "warning",
+      "category": "performance"
+    },
+    {
+      "pattern": "style\\s*=\\s*\\{\\{",
+      "message": "Inline style object - creates new object on each render, define outside or use CSS",
+      "severity": "info",
+      "category": "performance"
+    },
+    {
+      "pattern": "\\.map\\s*\\([^)]+\\)(?![^<]*key=)",
+      "message": "Array map without key prop - add unique key prop to list items",
+      "severity": "error",
+      "category": "keys"
+    },
+    {
+      "pattern": "key\\s*=\\s*\\{\\s*index\\s*\\}",
+      "message": "Using array index as key - can cause bugs with dynamic lists, use unique ID",
+      "severity": "warning",
+      "category": "keys"
+    },
+    {
+      "pattern": "dangerouslySetInnerHTML",
+      "message": "dangerouslySetInnerHTML detected - ensure content is properly sanitized to prevent XSS",
+      "severity": "warning",
+      "category": "security"
+    },
+    {
+      "pattern": "render\\s*\\(\\s*\\)\\s*\\{[^}]*if\\s*\\(",
+      "message": "Conditional rendering in render method - use early returns or ternary operators",
+      "severity": "info",
+      "category": "readability"
+    },
+    {
+      "pattern": "propTypes\\s*=",
+      "message": "PropTypes detected - consider using TypeScript for better type safety",
+      "severity": "info",
+      "category": "typescript"
+    },
+    {
+      "pattern": "defaultProps\\s*=",
+      "message": "defaultProps detected - consider using default parameters in functional components",
+      "severity": "info",
+      "category": "modern-react"
+    },
+    {
+      "pattern": "findDOMNode",
+      "message": "findDOMNode is deprecated - use refs instead",
+      "severity": "warning",
+      "category": "deprecated"
+    }
+  ]
+}

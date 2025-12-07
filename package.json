@@ -20,72 +20,113 @@
     "php",
     "automation"
   ],
-  "activationEvents": [
-    "onCommand:pcw.core.generateContextMap",
-    "onCommand:pcw.core.setGuardrails",
-    "onCommand:pcw.core.updateGuardrails",
-    "onCommand:pcw.core.scanSecrets",
-    "onCommand:pcw.elementor.auditWidget",
-    "onCommand:pcw.elementor.generateBoilerplate",
-    "onCommand:pcw.wordpress.scaffoldChildTheme",
-    "onCommand:pcw.wordpress.runWPCS",
-    "onCommand:pcw.woocommerce.checkTemplateOverrides",
-    "onCommand:pcw.woocommerce.generateCustomTab"
-  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "pcw.core.generateContextMap",
-        "title": "PCW: Generate Context Map",
+        "title": "PPACK: Core: Generate Context Map",
+        "category": "Core"
+      },
+      {
+        "command": "pcw.core.auditFile",
+        "title": "PPACK: Core: Audit File (Context-Aware)",
+        "category": "Core"
+      },
+      {
+        "command": "pcw.core.auditWorkspace",
+        "title": "PPACK: Core: Audit Workspace (Context-Aware)",
+        "category": "Core"
+      },
+      {
+        "command": "pcw.core.reloadRules",
+        "title": "PPACK: Core: Reload Audit Rules",
         "category": "Core"
       },
       {
         "command": "pcw.core.setGuardrails",
-        "title": "PCW: Set Project Guardrails",
+        "title": "PPACK: Core: Set Project Guardrails",
         "category": "Core"
       },
       {
         "command": "pcw.core.updateGuardrails",
-        "title": "PCW: Update Guardrails",
+        "title": "PPACK: Core: Update Guardrails",
         "category": "Core"
       },
       {
         "command": "pcw.core.scanSecrets",
-        "title": "PCW: Secret Scanner",
+        "title": "PPACK: Core: Secret Scanner",
         "category": "Core"
       },
       {
         "command": "pcw.elementor.auditWidget",
-        "title": "PCW: Audit Elementor Widget (Pre-Flight)",
+        "title": "PPACK: Elementor: Audit Widget (Pre-Flight)",
         "category": "Elementor"
       },
       {
         "command": "pcw.elementor.generateBoilerplate",
-        "title": "PCW: Generate Widget Boilerplate",
+        "title": "PPACK: Elementor: Generate Widget Boilerplate",
         "category": "Elementor"
       },
       {
         "command": "pcw.wordpress.scaffoldChildTheme",
-        "title": "PCW: Scaffold Child Theme",
+        "title": "PPACK: WordPress: Scaffold Child Theme",
         "category": "WordPress"
       },
       {
         "command": "pcw.wordpress.runWPCS",
-        "title": "PCW: Run WPCS Compliance Check",
+        "title": "PPACK: WordPress: Run WPCS Compliance Check",
         "category": "WordPress"
       },
       {
         "command": "pcw.woocommerce.checkTemplateOverrides",
-        "title": "PCW: Check Template Overrides",
+        "title": "PPACK: WooCommerce: Check Template Overrides",
         "category": "WooCommerce"
       },
       {
         "command": "pcw.woocommerce.generateCustomTab",
-        "title": "PCW: Generate Custom Tab",
+        "title": "PPACK: WooCommerce: Generate Custom Tab",
         "category": "WooCommerce"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "pcw-toolbelt",
+          "title": "PCW ToolBelt",
+          "icon": "assets/icon.png"
+        }
+      ]
+    },
+    "views": {
+      "pcw-toolbelt": [
+        {
+          "type": "webview",
+          "id": "pcw-toolbelt.sidePanel",
+          "name": "PowerPacks"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "PCW ToolBelt",
+      "properties": {
+        "pcw-toolbelt.chatProvider": {
+          "type": "string",
+          "default": "github-copilot",
+          "enum": [
+            "github-copilot",
+            "gemini",
+            "chatgpt"
+          ],
+          "enumDescriptions": [
+            "GitHub Copilot Chat (requires GitHub.copilot-chat extension)",
+            "Google Gemini (requires GoogleCloudTools.cloudcode extension)",
+            "ChatGPT (requires gencay.vscode-chatgpt extension)"
+          ],
+          "description": "Choose which AI chat provider to use for 'Copy to Chat' feature"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
@@ -96,12 +137,12 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/node": "^18.0.0",
+    "@types/node": "^20.0.0",
     "@types/vscode": "^1.80.0",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.50.0",
-    "typescript": "^5.2.0"
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.7.0"
   },
   "repository": {
     "type": "git",

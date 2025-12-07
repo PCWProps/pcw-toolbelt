@@ -1,0 +1,114 @@
+{
+  "context": "woocommerce",
+  "description": "WooCommerce best practices and common issues",
+  "rules": [
+    {
+      "pattern": "new\\s+WC_Order\\s*\\(\\s*\\$",
+      "message": "Direct WC_Order instantiation with variable - ensure order ID is validated",
+      "severity": "warning",
+      "category": "security"
+    },
+    {
+      "pattern": "\\$order->\\w+\\s*=",
+      "message": "Direct property assignment on order - use setter methods (set_*) and save()",
+      "severity": "warning",
+      "category": "data-access"
+    },
+    {
+      "pattern": "get_post_meta\\s*\\([^,]+,\\s*['\"]_",
+      "message": "Accessing order meta directly - use WC_Order methods (get_meta, get_total, etc.)",
+      "severity": "warning",
+      "category": "data-access"
+    },
+    {
+      "pattern": "update_post_meta\\s*\\([^,]+,\\s*['\"]_",
+      "message": "Updating order meta directly - use WC_Order setter methods and save()",
+      "severity": "warning",
+      "category": "data-access"
+    },
+    {
+      "pattern": "WC\\(\\)->cart",
+      "message": "Accessing cart directly - ensure this is only used on frontend, not in admin",
+      "severity": "info",
+      "category": "cart"
+    },
+    {
+      "pattern": "wc_get_template\\s*\\([^)]+\\)(?![^;]*do_action)",
+      "message": "Template loaded without hooks - consider if hooks are needed for extensibility",
+      "severity": "info",
+      "category": "templates"
+    },
+    {
+      "pattern": "woocommerce_wp_\\w+\\s*\\(",
+      "message": "Using WooCommerce form fields - ensure proper nonce verification on save",
+      "severity": "info",
+      "category": "forms"
+    },
+    {
+      "pattern": "\\$wpdb->query\\s*\\([^)]*wc_|\\$wpdb->query\\s*\\([^)]*woocommerce",
+      "message": "Direct database query on WooCommerce tables - use WC data stores or CRUD methods",
+      "severity": "warning",
+      "category": "database"
+    },
+    {
+      "pattern": "wc_get_product\\s*\\(\\s*\\$",
+      "message": "Getting product with variable - ensure product ID is validated and exists",
+      "severity": "info",
+      "category": "validation"
+    },
+    {
+      "pattern": "\\$product->get_price\\s*\\(",
+      "message": "Getting raw price - consider using wc_get_price_to_display() for tax-inclusive price",
+      "severity": "info",
+      "category": "pricing"
+    },
+    {
+      "pattern": "WC_Order\\s*\\((?!\\s*wc_get_order)",
+      "message": "Instantiating WC_Order directly - use wc_get_order() factory function instead",
+      "severity": "warning",
+      "category": "best-practice"
+    },
+    {
+      "pattern": "WC_Product\\s*\\((?!\\s*wc_get_product)",
+      "message": "Instantiating WC_Product directly - use wc_get_product() factory function instead",
+      "severity": "warning",
+      "category": "best-practice"
+    },
+    {
+      "pattern": "is_cart\\s*\\(\\s*\\)|is_checkout\\s*\\(\\s*\\)",
+      "message": "Conditional check detected - ensure it's not used too early (before 'wp' hook)",
+      "severity": "info",
+      "category": "timing"
+    },
+    {
+      "pattern": "woocommerce_before_calculate_totals",
+      "message": "Using calculate_totals hook - be careful with infinite loops, check doing_action()",
+      "severity": "warning",
+      "category": "hooks"
+    },
+    {
+      "pattern": "\\$order->calculate_totals\\s*\\(",
+      "message": "Manually calculating order totals - ensure this is necessary and called at the right time",
+      "severity": "info",
+      "category": "calculations"
+    },
+    {
+      "pattern": "add_meta_data\\s*\\([^,]+,\\s*['\"][^_]",
+      "message": "Adding public meta data - consider if it should be private (prefix with underscore)",
+      "severity": "info",
+      "category": "meta-data"
+    },
+    {
+      "pattern": "wc_get_orders\\s*\\(\\s*\\[(?![^\\]]*'limit')",
+      "message": "Getting orders without limit - can cause performance issues, always set a limit",
+      "severity": "warning",
+      "category": "performance"
+    },
+    {
+      "pattern": "foreach\\s*\\([^)]*get_items\\s*\\(\\s*\\)",
+      "message": "Iterating over order items - ensure you're using the right method (get_items('line_item'), etc.)",
+      "severity": "info",
+      "category": "order-items"
+    }
+  ]
+}

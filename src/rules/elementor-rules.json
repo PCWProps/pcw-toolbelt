@@ -1,0 +1,96 @@
+{
+  "context": "elementor",
+  "description": "Best practices and common issues for Elementor widget development",
+  "rules": [
+    {
+      "pattern": "class\\s+\\w+\\s+(?!extends\\s+.*Widget_Base)",
+      "message": "Widget class must extend \\Elementor\\Widget_Base or Widget_Base",
+      "severity": "error",
+      "category": "class-structure"
+    },
+    {
+      "pattern": "public\\s+function\\s+get_name\\s*\\(\\s*\\)\\s*\\{\\s*return\\s+['\"]\\w+['\"]\\s*;\\s*\\}",
+      "message": "Missing required get_name() method in widget class",
+      "severity": "error",
+      "category": "required-methods"
+    },
+    {
+      "pattern": "(?<!function\\s+)render\\s*\\(",
+      "message": "Missing or incorrectly defined render() method - must be public function render()",
+      "severity": "error",
+      "category": "required-methods"
+    },
+    {
+      "pattern": "(?<!function\\s+)get_title\\s*\\(",
+      "message": "Missing get_title() method - required for widget display name",
+      "severity": "error",
+      "category": "required-methods"
+    },
+    {
+      "pattern": "(?<!function\\s+)get_icon\\s*\\(",
+      "message": "Missing get_icon() method - required for widget icon",
+      "severity": "error",
+      "category": "required-methods"
+    },
+    {
+      "pattern": "(?<!function\\s+)get_categories\\s*\\(",
+      "message": "Missing get_categories() method - required to organize widget in panel",
+      "severity": "error",
+      "category": "required-methods"
+    },
+    {
+      "pattern": "<style[^>]*>",
+      "message": "Inline CSS detected - use render() output or enqueue_styles() instead",
+      "severity": "warning",
+      "category": "inline-styles"
+    },
+    {
+      "pattern": "<script[^>]*>",
+      "message": "Inline JavaScript detected - use enqueue_scripts() or frontend.js instead",
+      "severity": "warning",
+      "category": "inline-scripts"
+    },
+    {
+      "pattern": "register_widget_type\\s*\\(",
+      "message": "Deprecated method register_widget_type() - use widgets_manager->register() instead",
+      "severity": "warning",
+      "category": "deprecated"
+    },
+    {
+      "pattern": "_register_controls\\s*\\(",
+      "message": "Deprecated method _register_controls() - use register_controls() instead",
+      "severity": "warning",
+      "category": "deprecated"
+    },
+    {
+      "pattern": "\\$this->add_control\\s*\\([^,]+,\\s*\\[[^\\]]*'type'\\s*=>\\s*Controls_Manager::TEXT",
+      "message": "Consider using TEXT type with input_type for better UX (email, url, number, etc.)",
+      "severity": "info",
+      "category": "best-practice"
+    },
+    {
+      "pattern": "echo\\s+[^;]+;",
+      "message": "Direct echo in render() - consider using printf() or wp_kses_post() for security",
+      "severity": "info",
+      "category": "security"
+    },
+    {
+      "pattern": "\\$_GET\\[|\\$_POST\\[|\\$_REQUEST\\[",
+      "message": "Direct superglobal access - use sanitization functions (sanitize_text_field, etc.)",
+      "severity": "warning",
+      "category": "security"
+    },
+    {
+      "pattern": "get_settings\\s*\\(\\s*['\"]\\w+['\"]\\s*\\)",
+      "message": "Accessing individual setting - consider using get_settings_for_display() for better performance",
+      "severity": "info",
+      "category": "performance"
+    },
+    {
+      "pattern": "namespace\\s+(?!Elementor)",
+      "message": "Widget should be in an Elementor namespace or use \\Elementor\\Widget_Base with full path",
+      "severity": "info",
+      "category": "namespace"
+    }
+  ]
+}

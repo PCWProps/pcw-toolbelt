@@ -1,0 +1,96 @@
+{
+  "context": "wordpress",
+  "description": "WordPress coding standards and best practices",
+  "rules": [
+    {
+      "pattern": "add_action\\s*\\(\\s*['\"][^'\"]+['\"]\\s*,\\s*['\"][^'\"]+['\"]\\s*\\)",
+      "message": "add_action with string callback - consider using array callback for better organization",
+      "severity": "info",
+      "category": "hooks"
+    },
+    {
+      "pattern": "add_filter\\s*\\([^,]+,\\s*[^,]+\\s*\\)(?!\\s*,\\s*\\d+)",
+      "message": "add_filter without priority - consider specifying priority (default is 10)",
+      "severity": "info",
+      "category": "hooks"
+    },
+    {
+      "pattern": "\\$wpdb->query\\s*\\([^)]*\\$",
+      "message": "Direct variable in SQL query - use $wpdb->prepare() to prevent SQL injection",
+      "severity": "error",
+      "category": "security"
+    },
+    {
+      "pattern": "\\$_GET\\[|\\$_POST\\[|\\$_REQUEST\\[|\\$_COOKIE\\[",
+      "message": "Direct superglobal access - use sanitization functions (sanitize_text_field, etc.)",
+      "severity": "warning",
+      "category": "security"
+    },
+    {
+      "pattern": "eval\\s*\\(",
+      "message": "eval() is dangerous and should never be used",
+      "severity": "error",
+      "category": "security"
+    },
+    {
+      "pattern": "echo\\s+\\$",
+      "message": "Direct echo of variable - use esc_html(), esc_attr(), or esc_url() for output escaping",
+      "severity": "warning",
+      "category": "security"
+    },
+    {
+      "pattern": "wp_enqueue_script\\s*\\([^)]+\\)\\s*;\\s*(?!wp_localize_script)",
+      "message": "Script enqueued without localization - consider using wp_localize_script() for AJAX URLs",
+      "severity": "info",
+      "category": "localization"
+    },
+    {
+      "pattern": "__\\s*\\(\\s*['\"][^'\"]+['\"]\\s*\\)(?!\\s*,\\s*['\"])",
+      "message": "Translation function without text domain - add text domain for proper i18n",
+      "severity": "warning",
+      "category": "i18n"
+    },
+    {
+      "pattern": "register_post_type\\s*\\([^,]+,\\s*\\[(?![^\\]]*'show_in_rest')",
+      "message": "Post type without REST API support - add 'show_in_rest' => true for Gutenberg compatibility",
+      "severity": "info",
+      "category": "gutenberg"
+    },
+    {
+      "pattern": "mysql_|mysqli_",
+      "message": "Direct MySQL functions - use $wpdb object for database operations",
+      "severity": "error",
+      "category": "database"
+    },
+    {
+      "pattern": "file_get_contents\\s*\\(\\s*['\"]http",
+      "message": "file_get_contents for HTTP - use wp_remote_get() for better compatibility",
+      "severity": "warning",
+      "category": "http"
+    },
+    {
+      "pattern": "curl_",
+      "message": "Direct cURL usage - use wp_remote_get() or wp_remote_post() instead",
+      "severity": "warning",
+      "category": "http"
+    },
+    {
+      "pattern": "define\\s*\\(\\s*['\"]\\w+['\"]",
+      "message": "Consider using const instead of define() for constants in modern PHP",
+      "severity": "info",
+      "category": "modern-php"
+    },
+    {
+      "pattern": "session_start\\s*\\(",
+      "message": "PHP sessions not recommended in WordPress - use transients or user meta instead",
+      "severity": "warning",
+      "category": "sessions"
+    },
+    {
+      "pattern": "wp_redirect\\s*\\([^)]+\\)\\s*;(?!\\s*exit)",
+      "message": "wp_redirect() without exit - always call exit after redirect",
+      "severity": "error",
+      "category": "redirects"
+    }
+  ]
+}
