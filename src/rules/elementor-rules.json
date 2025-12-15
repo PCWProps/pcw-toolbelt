@@ -3,94 +3,138 @@
   "description": "Best practices and common issues for Elementor widget development",
   "rules": [
     {
-      "pattern": "class\\s+\\w+\\s+(?!extends\\s+.*Widget_Base)",
-      "message": "Widget class must extend \\Elementor\\Widget_Base or Widget_Base",
+      "id": "elementor-class-extends-widget-base",
+      "pattern": "class\\s+\\w+\\s+(?!extends\\s+\\\\?Elementor\\\\Widget_Base)",
+      "message": "Widget class must extend \\\\Elementor\\\\Widget_Base or Widget_Base",
       "severity": "error",
       "category": "class-structure"
     },
     {
-      "pattern": "public\\s+function\\s+get_name\\s*\\(\\s*\\)\\s*\\{\\s*return\\s+['\"]\\w+['\"]\\s*;\\s*\\}",
-      "message": "Missing required get_name() method in widget class",
+      "id": "elementor-get-name-required",
+      "pattern": "public\\s+function\\s+get_name\\s*\\(",
+      "message": "Missing required get_name() method returning widget slug",
       "severity": "error",
-      "category": "required-methods"
+      "category": "required-methods",
+      "mustExist": true,
+      "suggestion": "Add public function get_name() { return 'my-widget-slug'; }"
     },
     {
-      "pattern": "(?<!function\\s+)render\\s*\\(",
-      "message": "Missing or incorrectly defined render() method - must be public function render()",
+      "id": "elementor-render-required",
+      "pattern": "(?:public|protected)\\s+function\\s+render\\s*\\(",
+      "message": "Missing required render() method to output the widget HTML",
       "severity": "error",
-      "category": "required-methods"
+      "category": "required-methods",
+      "mustExist": true,
+      "suggestion": "Implement protected function render() { /* echo widget output */ }"
     },
     {
-      "pattern": "(?<!function\\s+)get_title\\s*\\(",
+      "id": "elementor-get-title-required",
+      "pattern": "public\\s+function\\s+get_title\\s*\\(",
       "message": "Missing get_title() method - required for widget display name",
-      "severity": "error",
-      "category": "required-methods"
+      "severity": "warning",
+      "category": "required-methods",
+      "mustExist": true,
+      "suggestion": "Add public function get_title() { return 'My Widget'; }"
     },
     {
-      "pattern": "(?<!function\\s+)get_icon\\s*\\(",
+      "id": "elementor-get-icon-required",
+      "pattern": "public\\s+function\\s+get_icon\\s*\\(",
       "message": "Missing get_icon() method - required for widget icon",
-      "severity": "error",
-      "category": "required-methods"
+      "severity": "warning",
+      "category": "required-methods",
+      "mustExist": true,
+      "suggestion": "Add public function get_icon() { return 'eicon-star'; }"
     },
     {
-      "pattern": "(?<!function\\s+)get_categories\\s*\\(",
+      "id": "elementor-get-categories-required",
+      "pattern": "public\\s+function\\s+get_categories\\s*\\(",
       "message": "Missing get_categories() method - required to organize widget in panel",
-      "severity": "error",
-      "category": "required-methods"
+      "severity": "warning",
+      "category": "required-methods",
+      "mustExist": true,
+      "suggestion": "Return at least one Elementor category, e.g. return ['general'];"
     },
     {
+      "id": "elementor-namespace-missing",
+      "pattern": "namespace\\s+[\\\\\\w]+;",
+      "message": "No namespace detected. Add a namespace to avoid class conflicts.",
+      "severity": "warning",
+      "category": "namespace",
+      "mustExist": true
+    },
+    {
+      "id": "elementor-inline-css",
       "pattern": "<style[^>]*>",
       "message": "Inline CSS detected - use render() output or enqueue_styles() instead",
       "severity": "warning",
-      "category": "inline-styles"
+      "category": "inline-styles",
+      "suggestion": "Move styles into Elementor controls or enqueue a stylesheet from the plugin/theme."
     },
     {
+      "id": "elementor-inline-js",
       "pattern": "<script[^>]*>",
       "message": "Inline JavaScript detected - use enqueue_scripts() or frontend.js instead",
       "severity": "warning",
-      "category": "inline-scripts"
+      "category": "inline-scripts",
+      "suggestion": "Enqueue a dedicated JS file and localize needed data instead of inline scripts."
     },
     {
+      "id": "elementor-register-widget-type",
       "pattern": "register_widget_type\\s*\\(",
       "message": "Deprecated method register_widget_type() - use widgets_manager->register() instead",
       "severity": "warning",
-      "category": "deprecated"
+      "category": "deprecated",
+      "fix": {
+        "description": "Replace register_widget_type(...) with widgets_manager->register(...)",
+        "replace": {
+          "pattern": "register_widget_type",
+          "replacement": "register"
+        }
+      }
     },
     {
+      "id": "elementor-register-controls-deprecated",
       "pattern": "_register_controls\\s*\\(",
       "message": "Deprecated method _register_controls() - use register_controls() instead",
       "severity": "warning",
-      "category": "deprecated"
+      "category": "deprecated",
+      "fix": {
+        "description": "Rename _register_controls to register_controls",
+        "replace": {
+          "pattern": "_register_controls",
+          "replacement": "register_controls"
+        }
+      }
     },
     {
+      "id": "elementor-controls-input-type",
       "pattern": "\\$this->add_control\\s*\\([^,]+,\\s*\\[[^\\]]*'type'\\s*=>\\s*Controls_Manager::TEXT",
       "message": "Consider using TEXT type with input_type for better UX (email, url, number, etc.)",
       "severity": "info",
       "category": "best-practice"
     },
     {
+      "id": "elementor-direct-echo",
       "pattern": "echo\\s+[^;]+;",
       "message": "Direct echo in render() - consider using printf() or wp_kses_post() for security",
       "severity": "info",
-      "category": "security"
+      "category": "security",
+      "suggestion": "Escape output using esc_html/esc_attr or wp_kses_post before echoing."
     },
     {
+      "id": "elementor-superglobals",
       "pattern": "\\$_GET\\[|\\$_POST\\[|\\$_REQUEST\\[",
       "message": "Direct superglobal access - use sanitization functions (sanitize_text_field, etc.)",
       "severity": "warning",
-      "category": "security"
+      "category": "security",
+      "suggestion": "Sanitize inputs with sanitize_text_field(), esc_attr(), or dedicated validators."
     },
     {
+      "id": "elementor-get-settings-for-display",
       "pattern": "get_settings\\s*\\(\\s*['\"]\\w+['\"]\\s*\\)",
       "message": "Accessing individual setting - consider using get_settings_for_display() for better performance",
       "severity": "info",
       "category": "performance"
-    },
-    {
-      "pattern": "namespace\\s+(?!Elementor)",
-      "message": "Widget should be in an Elementor namespace or use \\Elementor\\Widget_Base with full path",
-      "severity": "info",
-      "category": "namespace"
     }
   ]
 }

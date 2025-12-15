@@ -148,19 +148,40 @@ Framework-specific rule definitions that can be updated without recompiling.
 
 ## Migration from Old System
 
-The old Elementor-specific auditor (`src/packs/elementor/auditor.ts`) is still available for backward compatibility. New code should use the universal context-aware auditor.
+The old Elementor-specific auditor (`src/packs/elementor/auditor.ts`) now delegates directly to the universal context-aware auditor. All legacy checks have been migrated into `src/rules/elementor-rules.json` with explicit rule IDs, `mustExist` semantics, and fix/suggestion metadata.
 
-To migrate existing hardcoded checks:
+Migration steps (already applied for Elementor):
 
-1. Extract the regex pattern
-2. Create a rule object in the appropriate JSON file
-3. Test with `PCW: Audit File`
-4. Remove the old TypeScript code
+1. Extracted regex patterns from hardcoded checks
+2. Added rule objects (with IDs) to the appropriate JSON file
+3. Verified via `PPACK: Core: Audit File (Context-Aware)`
+4. Replaced legacy auditor logic with a thin wrapper to the universal engine
 
 ## Future Enhancements
 
-- [ ] Custom rule files per project (`.pcw-rules/`)
-- [ ] Rule severity configuration
-- [ ] Auto-fix suggestions for common issues
-- [ ] Integration with VS Code problems panel
-- [ ] Rule sharing and community rules repository
+- [x] Custom rule files per project (`.pcw-rules/`)
+- [x] Rule severity configuration via `.pcw-rules/config.json`
+- [x] Auto-fix suggestions for common issues (`PPACK: Core: Apply Auto-Fixes`)
+- [x] Integration with VS Code Problems panel (diagnostics on audits)
+- [x] Rule sharing through remote repositories (declare URLs in `.pcw-rules/config.json`)
+
+### Project-Level Rules & Severity Overrides
+
+- Create `.pcw-rules/<context>-rules.json` in your workspace to extend or override bundled rules.
+- Add `.pcw-rules/config.json` to tweak severities or pull community rule feeds:
+  ```json
+  {
+    "severityOverrides": {
+      "elementor": {
+        "elementor-direct-echo": "warning"
+      }
+    },
+    "repositories": ["https://example.com/community/elementor-rules.json"]
+  }
+  ```
+
+### Auto-Fix Workflow
+
+- Run `PPACK: Core: Audit File (Context-Aware)` to surface issues and suggestions.
+- Run `PPACK: Core: Apply Auto-Fixes` to apply safe replacements defined in rule metadata (e.g., renaming deprecated Elementor APIs).
+- Diagnostics are published to the VS Code Problems panel for quick navigation.

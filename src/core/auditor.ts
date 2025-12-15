@@ -1,9 +1,12 @@
 import * as vscode from "vscode";
 import { ContextManager } from "../core/ContextManager";
 import { IssueItem } from "./SidePanelProvider";
+import { Rule } from "./types";
 
 // Side panel provider will be set after extension activation
 let _sidePanelProvider: any;
+const diagnosticsCollection =
+  vscode.languages.createDiagnosticCollection("pcw-toolbelt");
 
 export function setSidePanelProvider(provider: any) {
   _sidePanelProvider = provider;
@@ -136,6 +139,79 @@ export async function auditWorkspace() {
 }
 
 /**
+ * Apply available auto-fix replacements for the active file based on rule metadata
+ */
+export async function applyAutoFixes() {
+  const editor = vscode.window.activeTextEditor;
+
+  if (!editor) {
+    vscode.window.showErrorMessage(
+      "No active editor found. Open a file to fix."
+    );
+    return;
+  }
+
+  const document = editor.document;
+  const content = document.getText();
+  const contextManager = ContextManager.getInstance();
+  const context = contextManager.detectContext(content);
+
+  if (context === "unknown") {
+    vscode.window.showWarningMessage(
+      "Unable to detect framework context for auto-fixes."
+    );
+    return;
+  }
+
+  const ruleSet = await contextManager.loadRules(context);
+  if (!ruleSet) {
+    vscode.window.showWarningMessage("No rules available for this context.");
+    return;
+  }
+
+  const fixableRules = ruleSet.rules.filter((rule) => rule.fix?.replace);
+  if (fixableRules.length === 0) {
+    vscode.window.showInformationMessage(
+      "No auto-fix suggestions available for this file."
+    );
+    return;
+  }
+
+  let updatedContent = content;
+  const applied: string[] = [];
+
+  for (const rule of fixableRules) {
+    const replacement = rule.fix?.replace;
+    if (!replacement) continue;
+
+    const regex = new RegExp(replacement.pattern, replacement.flags || "gm");
+    if (!regex.test(updatedContent)) {
+      continue;
+    }
+
+    updatedContent = updatedContent.replace(regex, replacement.replacement);
+    applied.push(rule.id || rule.message);
+  }
+
+  if (updatedContent === content) {
+    vscode.window.showInformationMessage("No matching issues to fix.");
+    return;
+  }
+
+  await editor.edit((editBuilder) => {
+    const fullRange = new vscode.Range(
+      document.positionAt(0),
+      document.positionAt(content.length)
+    );
+    editBuilder.replace(fullRange, updatedContent);
+  });
+
+  vscode.window.showInformationMessage(
+    `Applied ${applied.length} auto-fix(es) for ${context}.`
+  );
+}
+
+/**
  * Display audit results in output channel and side panel
  */
 function displayAuditResults(result: any, contextManager: ContextManager) {
@@ -144,7 +220,9 @@ function displayAuditResults(result: any, contextManager: ContextManager) {
     line: issue.line,
     column: issue.column,
     severity: issue.rule.severity,
-    message: issue.rule.message,
+    message: issue.suggestion
+      ? `${issue.rule.message} — Suggestion: ${issue.suggestion}`
+      : issue.rule.message,
     matched: issue.matched,
     category: issue.rule.category,
     filePath: result.file,
@@ -154,6 +232,9 @@ function displayAuditResults(result: any, contextManager: ContextManager) {
   if (_sidePanelProvider) {
     _sidePanelProvider.showResults(issues, result.context);
   }
+
+  // Update VS Code Problems panel
+  updateDiagnostics([result]);
 
   // Also show in output channel
   const outputChannel = vscode.window.createOutputChannel(
@@ -206,7 +287,9 @@ function displayWorkspaceAuditResults(
         line: issue.line,
         column: issue.column,
         severity: issue.rule.severity,
-        message: issue.rule.message,
+        message: issue.suggestion
+          ? `${issue.rule.message} — Suggestion: ${issue.suggestion}`
+          : issue.rule.message,
         matched: issue.matched,
         category: issue.rule.category,
         filePath: result.file,
@@ -222,6 +305,9 @@ function displayWorkspaceAuditResults(
       `${results.length} file(s) with issues`
     );
   }
+
+  // Update VS Code Problems panel
+  updateDiagnostics(results);
 
   const outputChannel = vscode.window.createOutputChannel(
     "PCW ToolBelt - Workspace Audit"
@@ -280,6 +366,62 @@ function displayWorkspaceAuditResults(
   }
 
   outputChannel.show();
+}
+
+function toDiagnosticSeverity(
+  severity: Rule["severity"]
+): vscode.DiagnosticSeverity {
+  switch (severity) {
+    case "error":
+      return vscode.DiagnosticSeverity.Error;
+    case "warning":
+      return vscode.DiagnosticSeverity.Warning;
+    default:
+      return vscode.DiagnosticSeverity.Information;
+  }
+}
+
+function updateDiagnostics(results: any[]) {
+  diagnosticsCollection.clear();
+
+  const grouped = new Map<string, vscode.Diagnostic[]>();
+
+  results.forEach((result) => {
+    const diagnostics: vscode.Diagnostic[] = grouped.get(result.file) || [];
+
+    result.issues.forEach((issue: any) => {
+      const start = new vscode.Position(
+        Math.max(issue.line - 1, 0),
+        Math.max(issue.column - 1, 0)
+      );
+      const end = new vscode.Position(
+        Math.max(issue.line - 1, 0),
+        Math.max(issue.column - 1, 0) +
+          Math.max((issue.matched || "").length, 1)
+      );
+
+      const message = issue.suggestion
+        ? `${issue.rule.message}\nSuggestion: ${issue.suggestion}`
+        : issue.rule.message;
+
+      const diagnostic = new vscode.Diagnostic(
+        new vscode.Range(start, end),
+        message,
+        toDiagnosticSeverity(issue.rule.severity)
+      );
+
+      diagnostic.source = "PCW ToolBelt";
+      diagnostic.code = issue.rule.id || issue.rule.category;
+
+      diagnostics.push(diagnostic);
+    });
+
+    grouped.set(result.file, diagnostics);
+  });
+
+  grouped.forEach((diagnostics, filePath) => {
+    diagnosticsCollection.set(vscode.Uri.file(filePath), diagnostics);
+  });
 }
 
 /**

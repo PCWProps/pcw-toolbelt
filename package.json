@@ -44,6 +44,11 @@
         "category": "Core"
       },
       {
+        "command": "pcw.core.applyAutoFixes",
+        "title": "PPACK: Core: Apply Auto-Fixes",
+        "category": "Core"
+      },
+      {
         "command": "pcw.core.setGuardrails",
         "title": "PPACK: Core: Set Project Guardrails",
         "category": "Core"
@@ -61,6 +66,11 @@
       {
         "command": "pcw.core.checkDependencies",
         "title": "PPACK: Core: Dependency Health Check",
+        "category": "Core"
+      },
+      {
+        "command": "pcw.core.updateKnowledge",
+        "title": "PPACK: Core: Update Knowledge (Docs Cache)",
         "category": "Core"
       },
       {

@@ -16,10 +16,11 @@ import {
   AuditIssue,
   Rule,
 } from "./types";
+import * as https from "https";
 
 export class ContextManager {
   private static instance: ContextManager;
-  private rulesCache: Map<FrameworkContext, RuleSet> = new Map();
+  private rulesCache: Map<string, RuleSet> = new Map();
 
   // Signature patterns for framework detection
   private readonly signatures: ContextSignature[] = [
@@ -63,6 +64,18 @@ export class ContextManager {
       ],
     },
   ];
+
+  private getCacheKey(context: FrameworkContext): string {
+    const workspaceRoot = this.getWorkspaceRoot();
+    return `${workspaceRoot ?? "global"}::${context}`;
+  }
+
+  private getWorkspaceRoot(): string | null {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    return workspaceFolders && workspaceFolders.length > 0
+      ? workspaceFolders[0].uri.fsPath
+      : null;
+  }
 
   private constructor() {}
 
@@ -124,46 +137,226 @@ export class ContextManager {
       return null;
     }
 
+    const cacheKey = this.getCacheKey(context);
+
     // Check cache first
-    if (this.rulesCache.has(context)) {
-      return this.rulesCache.get(context)!;
+    if (this.rulesCache.has(cacheKey)) {
+      return this.rulesCache.get(cacheKey)!;
     }
 
     try {
-      const extensionPath = vscode.extensions.getExtension(
-        "pcwprops.pcw-toolbelt"
-      )?.extensionPath;
-      if (!extensionPath) {
-        throw new Error("Extension path not found");
-      }
-
-      const rulesPath = path.join(
-        extensionPath,
-        "src",
-        "rules",
-        `${context}-rules.json`
+      const baseRuleSet = await this.loadBaseRuleSet(context);
+      const workspaceRuleSets = await this.loadWorkspaceRuleSets(context);
+      const config = await this.loadWorkspaceConfig();
+      const remoteRuleSets = await this.loadRemoteRuleSets(
+        context,
+        config?.repositories
       );
 
-      if (!fs.existsSync(rulesPath)) {
-        vscode.window.showWarningMessage(
-          `Rules file not found: ${context}-rules.json`
-        );
-        return null;
-      }
+      const mergedRules = this.mergeRuleSets([
+        ...(baseRuleSet ? [baseRuleSet] : []),
+        ...workspaceRuleSets,
+        ...remoteRuleSets,
+      ]);
 
-      const rulesContent = fs.readFileSync(rulesPath, "utf-8");
-      const ruleSet: RuleSet = JSON.parse(rulesContent);
+      const rulesWithOverrides = this.applySeverityOverrides(
+        mergedRules,
+        context,
+        config ?? undefined
+      );
 
-      // Cache the rules
-      this.rulesCache.set(context, ruleSet);
+      const mergedRuleSet: RuleSet = {
+        context,
+        description:
+          baseRuleSet?.description ||
+          `${context} rules (including workspace and community overlays)`,
+        rules: rulesWithOverrides,
+        source: baseRuleSet?.source ?? "merged",
+      };
 
-      return ruleSet;
+      this.rulesCache.set(cacheKey, mergedRuleSet);
+
+      return mergedRuleSet;
     } catch (error) {
       vscode.window.showErrorMessage(
         `Error loading rules for ${context}: ${error}`
       );
       return null;
     }
+  }
+
+  private async loadBaseRuleSet(
+    context: FrameworkContext
+  ): Promise<RuleSet | null> {
+    const extensionPath = vscode.extensions.getExtension(
+      "pcwprops.pcw-toolbelt"
+    )?.extensionPath;
+    if (!extensionPath) {
+      throw new Error("Extension path not found");
+    }
+
+    const rulesPath = path.join(
+      extensionPath,
+      "src",
+      "rules",
+      `${context}-rules.json`
+    );
+
+    if (!fs.existsSync(rulesPath)) {
+      vscode.window.showWarningMessage(
+        `Rules file not found: ${context}-rules.json`
+      );
+      return null;
+    }
+
+    const rulesContent = fs.readFileSync(rulesPath, "utf-8");
+    const ruleSet: RuleSet = JSON.parse(rulesContent);
+    ruleSet.source = "extension";
+    return ruleSet;
+  }
+
+  private async loadWorkspaceRuleSets(
+    context: FrameworkContext
+  ): Promise<RuleSet[]> {
+    const workspaceRoot = this.getWorkspaceRoot();
+    if (!workspaceRoot) {
+      return [];
+    }
+
+    const rulesDir = path.join(workspaceRoot, ".pcw-rules");
+    const filePath = path.join(rulesDir, `${context}-rules.json`);
+
+    if (!fs.existsSync(filePath)) {
+      return [];
+    }
+
+    try {
+      const rulesContent = fs.readFileSync(filePath, "utf-8");
+      const ruleSet: RuleSet = JSON.parse(rulesContent);
+      ruleSet.source = filePath;
+      return [ruleSet];
+    } catch (error) {
+      vscode.window.showWarningMessage(
+        `Unable to parse workspace rules at ${filePath}: ${error}`
+      );
+      return [];
+    }
+  }
+
+  private async loadWorkspaceConfig(): Promise<{
+    severityOverrides?: Record<string, Record<string, Rule["severity"]>>;
+    repositories?: string[];
+  } | null> {
+    const workspaceRoot = this.getWorkspaceRoot();
+    if (!workspaceRoot) {
+      return null;
+    }
+
+    const configPath = path.join(workspaceRoot, ".pcw-rules", "config.json");
+    if (!fs.existsSync(configPath)) {
+      return null;
+    }
+
+    try {
+      const content = fs.readFileSync(configPath, "utf-8");
+      return JSON.parse(content);
+    } catch (error) {
+      vscode.window.showWarningMessage(
+        `Unable to parse .pcw-rules/config.json: ${error}`
+      );
+      return null;
+    }
+  }
+
+  private async loadRemoteRuleSets(
+    context: FrameworkContext,
+    repositories?: string[]
+  ): Promise<RuleSet[]> {
+    if (!repositories || repositories.length === 0) {
+      return [];
+    }
+
+    const results: RuleSet[] = [];
+    for (const repoUrl of repositories) {
+      try {
+        const ruleSet = await this.fetchRemoteRuleSet(repoUrl);
+        if (ruleSet && (ruleSet.context === context || !ruleSet.context)) {
+          ruleSet.context = context;
+          ruleSet.source = repoUrl;
+          results.push(ruleSet);
+        }
+      } catch (error) {
+        console.warn(`Unable to fetch rules from ${repoUrl}:`, error);
+      }
+    }
+
+    return results;
+  }
+
+  private mergeRuleSets(ruleSets: RuleSet[]): Rule[] {
+    const merged: Map<string, Rule> = new Map();
+
+    for (const set of ruleSets) {
+      for (const rule of set.rules) {
+        const key = rule.id || rule.pattern;
+        merged.set(key, { ...rule });
+      }
+    }
+
+    return Array.from(merged.values());
+  }
+
+  private applySeverityOverrides(
+    rules: Rule[],
+    context: FrameworkContext,
+    config?: {
+      severityOverrides?: Record<string, Record<string, Rule["severity"]>>;
+    }
+  ): Rule[] {
+    if (!config?.severityOverrides || !config.severityOverrides[context]) {
+      return rules;
+    }
+
+    const overrides = config.severityOverrides[context];
+    return rules.map((rule) => {
+      const key = rule.id || rule.pattern;
+      const override = overrides[key];
+      if (!override) {
+        return rule;
+      }
+
+      if (["error", "warning", "info"].includes(override)) {
+        return { ...rule, severity: override as Rule["severity"] };
+      }
+
+      return rule;
+    });
+  }
+
+  private async fetchRemoteRuleSet(url: string): Promise<RuleSet | null> {
+    return new Promise((resolve) => {
+      https
+        .get(url, (res) => {
+          if (res.statusCode && res.statusCode >= 400) {
+            resolve(null);
+            return;
+          }
+
+          const chunks: Buffer[] = [];
+          res.on("data", (chunk) => chunks.push(chunk));
+          res.on("end", () => {
+            try {
+              const body = Buffer.concat(chunks).toString("utf-8");
+              const parsed: RuleSet = JSON.parse(body);
+              resolve(parsed);
+            } catch (error) {
+              console.warn(`Failed to parse rules from ${url}:`, error);
+              resolve(null);
+            }
+          });
+        })
+        .on("error", () => resolve(null));
+    });
   }
 
   /**
@@ -198,24 +391,42 @@ export class ContextManager {
       };
     }
 
-    // Split content into lines for line number tracking
-    const lines = content.split("\n");
-
-    // Run each rule against the content
     for (const rule of ruleSet.rules) {
       const regex = new RegExp(rule.pattern, "gm");
 
-      lines.forEach((line, lineIndex) => {
-        let match;
-        while ((match = regex.exec(line)) !== null) {
+      if (rule.mustExist) {
+        const found = regex.test(content);
+        regex.lastIndex = 0; // reset for subsequent iterations
+        if (!found) {
           issues.push({
-            line: lineIndex + 1,
-            column: match.index + 1,
-            rule: rule,
-            matched: match[0],
+            line: 1,
+            column: 1,
+            rule,
+            matched: "(missing)",
+            suggestion: rule.suggestion,
+            fix: rule.fix,
           });
         }
-      });
+        continue;
+      }
+
+      let match: RegExpExecArray | null;
+      while ((match = regex.exec(content)) !== null) {
+        const position = this.getPositionFromIndex(content, match.index);
+        issues.push({
+          line: position.line,
+          column: position.column,
+          rule,
+          matched: match[0],
+          suggestion: rule.suggestion,
+          fix: rule.fix,
+        });
+
+        // Prevent infinite loops for zero-length matches
+        if (match.index === regex.lastIndex) {
+          regex.lastIndex++;
+        }
+      }
     }
 
     return {
@@ -249,6 +460,20 @@ export class ContextManager {
    */
   public clearCache(): void {
     this.rulesCache.clear();
+  }
+
+  private getPositionFromIndex(
+    content: string,
+    index: number
+  ): {
+    line: number;
+    column: number;
+  } {
+    const preceding = content.slice(0, index);
+    const lines = preceding.split("\n");
+    const line = lines.length;
+    const column = (lines[lines.length - 1] || "").length + 1;
+    return { line, column };
   }
 
   /**
@@ -285,6 +510,9 @@ export class ContextManager {
       errors.forEach((issue) => {
         output += `  Line ${issue.line}:${issue.column} - ${issue.rule.message}\n`;
         output += `    Matched: "${issue.matched}"\n`;
+        if (issue.suggestion) {
+          output += `    Suggestion: ${issue.suggestion}\n`;
+        }
       });
       output += "\n";
     }
@@ -294,6 +522,9 @@ export class ContextManager {
       warnings.forEach((issue) => {
         output += `  Line ${issue.line}:${issue.column} - ${issue.rule.message}\n`;
         output += `    Matched: "${issue.matched}"\n`;
+        if (issue.suggestion) {
+          output += `    Suggestion: ${issue.suggestion}\n`;
+        }
       });
       output += "\n";
     }
@@ -303,6 +534,9 @@ export class ContextManager {
       infos.forEach((issue) => {
         output += `  Line ${issue.line}:${issue.column} - ${issue.rule.message}\n`;
         output += `    Matched: "${issue.matched}"\n`;
+        if (issue.suggestion) {
+          output += `    Suggestion: ${issue.suggestion}\n`;
+        }
       });
     }
 

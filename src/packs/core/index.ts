@@ -5,6 +5,7 @@ import {
   auditFile,
   auditWorkspace,
   reloadRules,
+  applyAutoFixes,
   getSidePanelProvider,
 } from "../../core/auditor";
 import { BlueprintManager } from "../../core/blueprints/BlueprintManager";
@@ -12,6 +13,7 @@ import { RedundancyAuditor } from "./redundancy";
 import { GuardrailsManager } from "./guardrails";
 import { SecretScanner } from "./secretScanner";
 import { DependencyHealthChecker } from "./dependencyHealth";
+import { StandardsManager } from "../../core/StandardsManager";
 
 /**
  * Core PowerPack - "All Systems Go"
@@ -40,6 +42,11 @@ export function activate(context: vscode.ExtensionContext) {
   const reloadRulesCmd = vscode.commands.registerCommand(
     "pcw.core.reloadRules",
     reloadRules
+  );
+
+  const applyAutoFixesCmd = vscode.commands.registerCommand(
+    "pcw.core.applyAutoFixes",
+    applyAutoFixes
   );
 
   // Set Project Guardrails command
@@ -252,6 +259,18 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  // Manual refresh of standards cache
+  const updateKnowledgeCmd = vscode.commands.registerCommand(
+    "pcw.core.updateKnowledge",
+    async () => {
+      const mgr = StandardsManager.getInstance();
+      const count = await mgr.updateSources();
+      vscode.window.showInformationMessage(
+        `Knowledge updated for ${count} standards source(s).`
+      );
+    }
+  );
+
   // Scaffold Blueprint command
   const scaffoldBlueprintCmd = vscode.commands.registerCommand(
     "pcw.core.scaffoldBlueprint",
@@ -433,12 +452,14 @@ export function activate(context: vscode.ExtensionContext) {
     auditFileCmd,
     auditWorkspaceCmd,
     reloadRulesCmd,
+    applyAutoFixesCmd,
     setGuardrailsCmd,
     updateGuardrailsCmd,
     scanSecretsCmd,
     checkDependenciesCmd,
     scaffoldBlueprintCmd,
-    auditRedundancyCmd
+    auditRedundancyCmd,
+    updateKnowledgeCmd
   );
 
   console.log("Core PowerPack: Activated ✓");
