@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { activate as activateCore } from "./packs/core";
+import { activate as activateAllSystemsGo } from "./packs/all-systems-go";
 import { activate as activateWordPress } from "./packs/wordpress";
 import { activate as activateElementor } from "./packs/elementor";
 import { activate as activateWooCommerce } from "./packs/woocommerce";
@@ -30,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
   setSidePanelProvider(sidePanelProvider);
 
   // Load all PowerPacks
-  activateCore(context);
+  activateAllSystemsGo(context);
   activateWordPress(context);
   activateElementor(context);
   activateWooCommerce(context);

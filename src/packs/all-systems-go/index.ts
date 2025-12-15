@@ -16,42 +16,42 @@ import { DependencyHealthChecker } from "./dependencyHealth";
 import { StandardsManager } from "../../core/StandardsManager";
 
 /**
- * Core PowerPack - "All Systems Go"
+ * All Systems Go PowerPack
  * Provides foundational tools for project sanity, context, and health
  */
 export function activate(context: vscode.ExtensionContext) {
-  console.log("Core PowerPack: Loading...");
+  console.log("All Systems Go PowerPack: Loading...");
 
   // Generate Context Map command
   const generateContextMapCmd = vscode.commands.registerCommand(
-    "pcw.core.generateContextMap",
+    "pcw.allsystemsgo.generateContextMap",
     generateContextMap
   );
 
   // Context-Aware Audit commands
   const auditFileCmd = vscode.commands.registerCommand(
-    "pcw.core.auditFile",
+    "pcw.allsystemsgo.auditFile",
     auditFile
   );
 
   const auditWorkspaceCmd = vscode.commands.registerCommand(
-    "pcw.core.auditWorkspace",
+    "pcw.allsystemsgo.auditWorkspace",
     auditWorkspace
   );
 
   const reloadRulesCmd = vscode.commands.registerCommand(
-    "pcw.core.reloadRules",
+    "pcw.allsystemsgo.reloadRules",
     reloadRules
   );
 
   const applyAutoFixesCmd = vscode.commands.registerCommand(
-    "pcw.core.applyAutoFixes",
+    "pcw.allsystemsgo.applyAutoFixes",
     applyAutoFixes
   );
 
   // Set Project Guardrails command
   const setGuardrailsCmd = vscode.commands.registerCommand(
-    "pcw.core.setGuardrails",
+    "pcw.allsystemsgo.setGuardrails",
     async () => {
       const manager = GuardrailsManager.getInstance();
       const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -103,7 +103,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Update Guardrails command
   const updateGuardrailsCmd = vscode.commands.registerCommand(
-    "pcw.core.updateGuardrails",
+    "pcw.allsystemsgo.updateGuardrails",
     async () => {
       const manager = GuardrailsManager.getInstance();
       const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -144,7 +144,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Secret Scanner command
   const scanSecretsCmd = vscode.commands.registerCommand(
-    "pcw.core.scanSecrets",
+    "pcw.allsystemsgo.scanSecrets",
     async () => {
       const scanner = SecretScanner.getInstance();
       const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -202,7 +202,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Dependency Health Check command
   const checkDependenciesCmd = vscode.commands.registerCommand(
-    "pcw.core.checkDependencies",
+    "pcw.allsystemsgo.checkDependencies",
     async () => {
       const checker = DependencyHealthChecker.getInstance();
       const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -261,7 +261,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Manual refresh of standards cache
   const updateKnowledgeCmd = vscode.commands.registerCommand(
-    "pcw.core.updateKnowledge",
+    "pcw.allsystemsgo.updateKnowledge",
     async () => {
       const mgr = StandardsManager.getInstance();
       const count = await mgr.updateSources();
@@ -273,7 +273,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Scaffold Blueprint command
   const scaffoldBlueprintCmd = vscode.commands.registerCommand(
-    "pcw.core.scaffoldBlueprint",
+    "pcw.allsystemsgo.scaffoldBlueprint",
     async () => {
       const blueprintManager = BlueprintManager.getInstance();
       const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -373,7 +373,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Audit Plugin Redundancy command
   const auditRedundancyCmd = vscode.commands.registerCommand(
-    "pcw.core.auditRedundancy",
+    "pcw.allsystemsgo.auditRedundancy",
     async () => {
       const auditor = RedundancyAuditor.getInstance();
       const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -462,6 +462,6 @@ export function activate(context: vscode.ExtensionContext) {
     updateKnowledgeCmd
   );
 
-  console.log("Core PowerPack: Activated ✓");
-  console.log("  - 10 tools loaded");
+  console.log("All Systems Go PowerPack: Activated ✓");
+  console.log("  - 12 tools loaded");
 }

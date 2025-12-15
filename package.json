@@ -24,64 +24,64 @@
   "contributes": {
     "commands": [
       {
-        "command": "pcw.core.generateContextMap",
-        "title": "PPACK: Core: Generate Context Map",
-        "category": "Core"
+        "command": "pcw.allsystemsgo.generateContextMap",
+        "title": "PPACK: All Systems Go: Generate Context Map",
+        "category": "All Systems Go"
       },
       {
-        "command": "pcw.core.auditFile",
-        "title": "PPACK: Core: Audit File (Context-Aware)",
-        "category": "Core"
+        "command": "pcw.allsystemsgo.auditFile",
+        "title": "PPACK: All Systems Go: Audit File (Context-Aware)",
+        "category": "All Systems Go"
       },
       {
-        "command": "pcw.core.auditWorkspace",
-        "title": "PPACK: Core: Audit Workspace (Context-Aware)",
-        "category": "Core"
+        "command": "pcw.allsystemsgo.auditWorkspace",
+        "title": "PPACK: All Systems Go: Audit Workspace (Context-Aware)",
+        "category": "All Systems Go"
       },
       {
-        "command": "pcw.core.reloadRules",
-        "title": "PPACK: Core: Reload Audit Rules",
-        "category": "Core"
+        "command": "pcw.allsystemsgo.reloadRules",
+        "title": "PPACK: All Systems Go: Reload Audit Rules",
+        "category": "All Systems Go"
       },
       {
-        "command": "pcw.core.applyAutoFixes",
-        "title": "PPACK: Core: Apply Auto-Fixes",
-        "category": "Core"
+        "command": "pcw.allsystemsgo.applyAutoFixes",
+        "title": "PPACK: All Systems Go: Apply Auto-Fixes",
+        "category": "All Systems Go"
       },
       {
-        "command": "pcw.core.setGuardrails",
-        "title": "PPACK: Core: Set Project Guardrails",
-        "category": "Core"
+        "command": "pcw.allsystemsgo.setGuardrails",
+        "title": "PPACK: All Systems Go: Set Project Guardrails",
+        "category": "All Systems Go"
       },
       {
-        "command": "pcw.core.updateGuardrails",
-        "title": "PPACK: Core: Update Guardrails",
-        "category": "Core"
+        "command": "pcw.allsystemsgo.updateGuardrails",
+        "title": "PPACK: All Systems Go: Update Guardrails",
+        "category": "All Systems Go"
       },
       {
-        "command": "pcw.core.scanSecrets",
-        "title": "PPACK: Core: Secret Scanner",
-        "category": "Core"
+        "command": "pcw.allsystemsgo.scanSecrets",
+        "title": "PPACK: All Systems Go: Secret Scanner",
+        "category": "All Systems Go"
       },
       {
-        "command": "pcw.core.checkDependencies",
-        "title": "PPACK: Core: Dependency Health Check",
-        "category": "Core"
+        "command": "pcw.allsystemsgo.checkDependencies",
+        "title": "PPACK: All Systems Go: Dependency Health Check",
+        "category": "All Systems Go"
       },
       {
-        "command": "pcw.core.updateKnowledge",
-        "title": "PPACK: Core: Update Knowledge (Docs Cache)",
-        "category": "Core"
+        "command": "pcw.allsystemsgo.updateKnowledge",
+        "title": "PPACK: All Systems Go: Update Knowledge (Docs Cache)",
+        "category": "All Systems Go"
       },
       {
-        "command": "pcw.core.scaffoldBlueprint",
-        "title": "PPACK: Core: Scaffold Blueprint",
-        "category": "Core"
+        "command": "pcw.allsystemsgo.scaffoldBlueprint",
+        "title": "PPACK: All Systems Go: Scaffold Blueprint",
+        "category": "All Systems Go"
       },
       {
-        "command": "pcw.core.auditRedundancy",
-        "title": "PPACK: Core: Audit Plugin Redundancy",
-        "category": "Core"
+        "command": "pcw.allsystemsgo.auditRedundancy",
+        "title": "PPACK: All Systems Go: Audit Plugin Redundancy",
+        "category": "All Systems Go"
       },
       {
         "command": "pcw.elementor.auditWidget",

@@ -109,13 +109,13 @@ export class PCWSidePanelProvider implements vscode.WebviewViewProvider {
    */
   private async _handleRunTool(powerPack: string, tool: string) {
     const commandMap: { [key: string]: string } = {
-      "core-generateContextMap": "pcw.core.generateContextMap",
-      "core-auditFile": "pcw.core.auditFile",
-      "core-auditWorkspace": "pcw.core.auditWorkspace",
-      "core-reloadRules": "pcw.core.reloadRules",
-      "core-setGuardrails": "pcw.core.setGuardrails",
-      "core-updateGuardrails": "pcw.core.updateGuardrails",
-      "core-scanSecrets": "pcw.core.scanSecrets",
+      "core-generateContextMap": "pcw.allsystemsgo.generateContextMap",
+      "core-auditFile": "pcw.allsystemsgo.auditFile",
+      "core-auditWorkspace": "pcw.allsystemsgo.auditWorkspace",
+      "core-reloadRules": "pcw.allsystemsgo.reloadRules",
+      "core-setGuardrails": "pcw.allsystemsgo.setGuardrails",
+      "core-updateGuardrails": "pcw.allsystemsgo.updateGuardrails",
+      "core-scanSecrets": "pcw.allsystemsgo.scanSecrets",
       "elementor-auditWidget": "pcw.elementor.auditWidget",
       "elementor-generateBoilerplate": "pcw.elementor.generateBoilerplate",
       "wordpress-scaffoldChildTheme": "pcw.wordpress.scaffoldChildTheme",
