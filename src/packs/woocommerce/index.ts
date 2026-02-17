@@ -1,29 +1,42 @@
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
+import {
+  CommandSpec,
+  powerPlaceholderSpec,
+  registerPackCommands,
+  standardCoreCommandSpecs,
+  superpowerPlaceholderSpec,
+} from "../shared/commands";
+import { checkTemplateOverrides, generateCustomTab } from "./core/commands";
 
 /**
  * WooCommerce PowerPack - "The Merchant"
  * Focuses on security, template overrides, and data integrity
  */
 export function activate(context: vscode.ExtensionContext) {
-    console.log('WooCommerce PowerPack: Loading...');
+  const packId = "woocommerce";
+  const packLabel = "WooCommerce";
 
-    // Check Template Overrides command
-    const checkTemplateOverridesCmd = vscode.commands.registerCommand(
-        'pcw.woocommerce.checkTemplateOverrides',
-        () => {
-            vscode.window.showInformationMessage('Template Override Checker coming soon!');
-        }
-    );
+  console.log("WooCommerce PowerPack: Loading...");
 
-    // Generate Custom Tab command
-    const generateCustomTabCmd = vscode.commands.registerCommand(
-        'pcw.woocommerce.generateCustomTab',
-        () => {
-            vscode.window.showInformationMessage('Custom Tab Generator coming soon!');
-        }
-    );
+  const coreSpecs = standardCoreCommandSpecs(packId, packLabel);
+  const wooCore: CommandSpec[] = [
+    {
+      id: "pcw.woocommerce.checkTemplateOverrides",
+      title: "PPACK: WooCommerce [Core]: Check Template Overrides",
+      handler: checkTemplateOverrides,
+    },
+    {
+      id: "pcw.woocommerce.generateCustomTab",
+      title: "PPACK: WooCommerce [Core]: Generate Custom Tab",
+      handler: generateCustomTab,
+    },
+  ];
 
-    context.subscriptions.push(checkTemplateOverridesCmd, generateCustomTabCmd);
+  registerPackCommands(context, [...coreSpecs, ...wooCore]);
+  registerPackCommands(context, [
+    powerPlaceholderSpec(packId, packLabel),
+    superpowerPlaceholderSpec(packId, packLabel),
+  ]);
 
-    console.log('WooCommerce PowerPack: Activated ✓');
+  console.log("WooCommerce PowerPack: Activated ✓");
 }

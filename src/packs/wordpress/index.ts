@@ -1,29 +1,42 @@
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
+import {
+  CommandSpec,
+  powerPlaceholderSpec,
+  registerPackCommands,
+  standardCoreCommandSpecs,
+  superpowerPlaceholderSpec,
+} from "../shared/commands";
+import { runWPCSCompliance, scaffoldChildTheme } from "./core/commands";
 
 /**
  * WordPress PowerPack - "The Developer"
  * Focuses on Standards, PHP compliance, and Theme structure
  */
 export function activate(context: vscode.ExtensionContext) {
-    console.log('WordPress PowerPack: Loading...');
+  const packId = "wordpress";
+  const packLabel = "WordPress";
 
-    // Scaffold Child Theme command
-    const scaffoldChildThemeCmd = vscode.commands.registerCommand(
-        'pcw.wordpress.scaffoldChildTheme',
-        () => {
-            vscode.window.showInformationMessage('Child Theme Scaffolder coming soon!');
-        }
-    );
+  console.log("WordPress PowerPack: Loading...");
 
-    // Run WPCS Compliance command
-    const runWPCSCmd = vscode.commands.registerCommand(
-        'pcw.wordpress.runWPCS',
-        () => {
-            vscode.window.showInformationMessage('WPCS Compliance Runner coming soon!');
-        }
-    );
+  const coreSpecs = standardCoreCommandSpecs(packId, packLabel);
+  const wpSpecificCore: CommandSpec[] = [
+    {
+      id: "pcw.wordpress.scaffoldChildTheme",
+      title: "PPACK: WordPress [Core]: Scaffold Child Theme",
+      handler: scaffoldChildTheme,
+    },
+    {
+      id: "pcw.wordpress.runWPCS",
+      title: "PPACK: WordPress [Core]: Run WPCS Compliance Check",
+      handler: runWPCSCompliance,
+    },
+  ];
 
-    context.subscriptions.push(scaffoldChildThemeCmd, runWPCSCmd);
+  registerPackCommands(context, [...coreSpecs, ...wpSpecificCore]);
+  registerPackCommands(context, [
+    powerPlaceholderSpec(packId, packLabel),
+    superpowerPlaceholderSpec(packId, packLabel),
+  ]);
 
-    console.log('WordPress PowerPack: Activated ✓');
+  console.log("WordPress PowerPack: Activated ✓");
 }

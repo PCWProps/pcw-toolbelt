@@ -1,28 +1,45 @@
-import * as vscode from 'vscode';
-import { auditWidget } from './auditor';
+import * as vscode from "vscode";
+import {
+  CommandSpec,
+  powerPlaceholderSpec,
+  registerPackCommands,
+  standardCoreCommandSpecs,
+  superpowerPlaceholderSpec,
+} from "../shared/commands";
+import { auditWidget } from "./core/auditor";
 
 /**
  * Elementor PowerPack - "The Builder"
  * Specialized tools to prevent "Files can't be used" errors
  */
 export function activate(context: vscode.ExtensionContext) {
-    console.log('Elementor PowerPack: Loading...');
+  const packId = "elementor";
+  const packLabel = "Elementor";
 
-    // Widget Pre-Flight Audit command (MAIN FEATURE)
-    const auditWidgetCmd = vscode.commands.registerCommand(
-        'pcw.elementor.auditWidget',
-        auditWidget
-    );
+  console.log("Elementor PowerPack: Loading...");
 
-    // Generate Widget Boilerplate command
-    const generateBoilerplateCmd = vscode.commands.registerCommand(
-        'pcw.elementor.generateBoilerplate',
-        () => {
-            vscode.window.showInformationMessage('Widget Boilerplate Generator coming soon!');
-        }
-    );
+  const coreSpecs = standardCoreCommandSpecs(packId, packLabel);
+  const elementorCore: CommandSpec[] = [
+    {
+      id: "pcw.elementor.auditWidget",
+      title: "PPACK: Elementor [Core]: Widget Pre-Flight Audit",
+      handler: auditWidget,
+    },
+    {
+      id: "pcw.elementor.generateBoilerplate",
+      title: "PPACK: Elementor [Core]: Generate Widget Boilerplate",
+      handler: () =>
+        vscode.window.showInformationMessage(
+          "Widget Boilerplate Generator coming soon!"
+        ),
+    },
+  ];
 
-    context.subscriptions.push(auditWidgetCmd, generateBoilerplateCmd);
+  registerPackCommands(context, [...coreSpecs, ...elementorCore]);
+  registerPackCommands(context, [
+    powerPlaceholderSpec(packId, packLabel),
+    superpowerPlaceholderSpec(packId, packLabel),
+  ]);
 
-    console.log('Elementor PowerPack: Activated ✓');
+  console.log("Elementor PowerPack: Activated ✓");
 }

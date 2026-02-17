@@ -3,6 +3,7 @@ import { activate as activateAllSystemsGo } from "./packs/all-systems-go";
 import { activate as activateWordPress } from "./packs/wordpress";
 import { activate as activateElementor } from "./packs/elementor";
 import { activate as activateWooCommerce } from "./packs/woocommerce";
+import { activate as activateIngramMicro } from "./packs/ingram-micro";
 import { PCWSidePanelProvider } from "./core/SidePanelProvider";
 import { setSidePanelProvider } from "./core/auditor";
 import { StandardsManager, StandardSource } from "./core/StandardsManager";
@@ -34,6 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
   activateWordPress(context);
   activateElementor(context);
   activateWooCommerce(context);
+  activateIngramMicro(context);
 
   // Configure standards sources (seed top file types)
   const standards = StandardsManager.getInstance();

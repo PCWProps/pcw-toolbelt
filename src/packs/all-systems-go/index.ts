@@ -1,6 +1,11 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { generateContextMap } from "./contextMap";
+import { generateContextMap } from "./core/contextMap";
+import { detectCodeDrift } from "./core/codeDrift";
+import { findPlaceholders } from "./core/placeholders";
+import { validateJson } from "./core/jsonValidator";
+import { writeSnippetToFile } from "./core/snippets";
+import { globalSearchReplace } from "./core/searchReplace";
 import {
   auditFile,
   auditWorkspace,
@@ -9,10 +14,10 @@ import {
   getSidePanelProvider,
 } from "../../core/auditor";
 import { BlueprintManager } from "../../core/blueprints/BlueprintManager";
-import { RedundancyAuditor } from "./redundancy";
-import { GuardrailsManager } from "./guardrails";
-import { SecretScanner } from "./secretScanner";
-import { DependencyHealthChecker } from "./dependencyHealth";
+import { RedundancyAuditor } from "./superpower/redundancy";
+import { GuardrailsManager } from "./core/guardrails";
+import { SecretScanner } from "./core/secretScanner";
+import { DependencyHealthChecker } from "./core/dependencyHealth";
 import { StandardsManager } from "../../core/StandardsManager";
 
 /**
@@ -140,6 +145,36 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showErrorMessage(`Error updating guardrails: ${error}`);
       }
     }
+  );
+
+  // Code Drift Detector
+  const codeDriftCmd = vscode.commands.registerCommand(
+    "pcw.allsystemsgo.codeDrift",
+    detectCodeDrift
+  );
+
+  // Find Placeholders
+  const findPlaceholdersCmd = vscode.commands.registerCommand(
+    "pcw.allsystemsgo.findPlaceholders",
+    findPlaceholders
+  );
+
+  // JSON Validator
+  const validateJsonCmd = vscode.commands.registerCommand(
+    "pcw.allsystemsgo.jsonValidator",
+    validateJson
+  );
+
+  // Snippets-to-File
+  const snippetsCmd = vscode.commands.registerCommand(
+    "pcw.allsystemsgo.snippetsToFile",
+    writeSnippetToFile
+  );
+
+  // Global Search/Replace
+  const searchReplaceCmd = vscode.commands.registerCommand(
+    "pcw.allsystemsgo.searchReplace",
+    globalSearchReplace
   );
 
   // Secret Scanner command
@@ -455,6 +490,11 @@ export function activate(context: vscode.ExtensionContext) {
     applyAutoFixesCmd,
     setGuardrailsCmd,
     updateGuardrailsCmd,
+    codeDriftCmd,
+    findPlaceholdersCmd,
+    validateJsonCmd,
+    snippetsCmd,
+    searchReplaceCmd,
     scanSecretsCmd,
     checkDependenciesCmd,
     scaffoldBlueprintCmd,
